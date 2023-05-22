@@ -38,7 +38,7 @@ app_ui = ui.page_fluid(
     
     ui.panel_main(
         ui.navset_tab(
-        ui.nav("Overall", ui.output_plot("plot")),
+        ui.nav("Key Findings", ui.output_plot("plot")),
         ui.nav("Size", ui.output_plot("size")),
         ui.nav("Sector", "Sector Graph")
      )
@@ -51,17 +51,13 @@ def server(input, output, session):
     @output
     @render.plot(alt="simple line graph")
     def plot():
-        f,ax = plt.subplots(1,1,figsize=(20,10))
-        colors = ['red','blue','green']*len(df['year'].unique())
-
-        df[['Unrestricted_operating_bottomline','Size','year']].boxplot(column='Unrestricted_operating_bottomline', by=['year','Size'],rot=90,ax=ax);
-
+        g = create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None)
     @output
     @render.plot(alt="Size Graph")
     def size():
        
 
-        _,ax = plt.subplots(1,1,figsize=(20,10))
+        
 
         # Create bar plot
         # g = sns.barplot(x='year', y='Unrestricted_operating_bottomline', hue='Size', data=grouped_data, ax=ax)
