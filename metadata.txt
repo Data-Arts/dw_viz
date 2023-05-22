@@ -1,0 +1,16 @@
+{
+"sfcds":{"uid":"JMILLER",
+         "pwd":"SMUremmaj25"},
+"dbs":{
+        "smartsdb":{"sf_account":"smu-da",
+                    "warehouse":"dataarts",
+                    "database":"dataartsdb"}
+      },
+"chunk_size":16000,
+"begin_dt":"2017-12-31",
+"end_dt":"2022-12-31",
+"trendYears":[2018,2019,2020,2021,2022],
+"orgmapfilepath":"OrgMap.xlsx",
+"var":"Unrestricted_operating_bottomline",
+"limits_winsorized":[0.1, 0.1]
+}
