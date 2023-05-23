@@ -58,6 +58,12 @@ create bar plots and save to "savepath" (string) for the field "var"
 hue: The bar plots to grouped by with, could be "Sector" or "Size"  
 style: figure style, options: {"darkgrid", "whitegrid", "dark", "white", "ticks"}  
 
-
-
+#### (4) barplot for one year - Size - Sector
+create_OneBarplot(df=df, # dataset
+                  var='Unrestricted_operating_bottomline', #variable
+                  yr=2020,sz='Small',st='Community', # year, size, sector
+                  agg='mean', # method to aggregate mean/median
+                  style='darkgrid',width=0.1,color='orange',alpha=1, #canvas style, bar width, bar color, tranparency 0-1
+                  xlabel_size=30,title_size=30,xticks_size=20) #xlabel size, title size, xticks size
+-> None
 
