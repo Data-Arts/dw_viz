@@ -502,6 +502,45 @@ def create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None):
     return
 
 
+def create_OneBarplot(df,var,yr,sz,st,agg='mean',style='darkgrid',width=0.1,color='orange',alpha=1,xlabel_size=30,title_size=30,xticks_size=20,savepath=None):
+
+    # Group data by year and type and calculate mean/median values
+    if agg=='median':
+        grouped_data = df.groupby(['year', 'Size','Sector']).median().reset_index()
+    else:
+        grouped_data = df.groupby(['year', 'Size','Sector']).mean().reset_index()
+    
+    grouped_data_sub = grouped_data[(grouped_data['year']==yr)&(grouped_data['Size']==sz)&(grouped_data['Sector']==st)]
+
+    # Set seaborn style
+    sns.set_style(style)
+
+    _,ax = plt.subplots(1,1,figsize=(20,10))
+
+    # Create bar plot
+    sns.barplot(x='year', y=var, 
+                data=grouped_data_sub, ax=ax,width=width,color=color,alpha=alpha)
+
+    # set legend fontsize larger
+    # sns.set(font_scale=4)
+
+    # Set x-axis label
+    plt.xlabel('Year',size=xlabel_size)
+    # Set x-axis ticks
+    plt.xticks(size=xticks_size)
+
+    # Set y-axis label
+    plt.ylabel('')
+
+    # Set title
+    plt.title(f'{var}-{agg} {yr} ({sz} - {st})',size=title_size)
+    
+    if savepath is None:
+        plt.savefig(f'{var}-{agg}_{yr}_{sz}_{st}.png')
+    else:
+        plt.savefig(savepath)
+        
+    return
 
 
 if __name__ == '__main__':
@@ -520,6 +559,13 @@ if __name__ == '__main__':
     create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None)
     create_barplot(df,var,hue='Size',style='whitegrid',savepath=None)
     
+    #barplot for one year - Size - Sector
+    create_OneBarplot(df=df, # dataset
+                      var='Unrestricted_operating_bottomline', #variable
+                      yr=2020,sz='Small',st='Community', # year, size, sector
+                      agg='mean', # method to aggregate mean/median
+                      style='darkgrid',width=0.1,color='orange',alpha=1, #canvas style, bar width, bar color, tranparency 0-1
+                      xlabel_size=30,title_size=30,xticks_size=20) #xlabel size, title size, xticks size
     
     
     
