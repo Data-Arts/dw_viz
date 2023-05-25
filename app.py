@@ -33,14 +33,20 @@ ui.tags.head(
   )
 )
 
+style=""
+
 app_ui = ui.page_fluid(
     ui.panel_title("Bottom Line Dashboard"),
     
     ui.panel_main(
         ui.navset_tab(
-        ui.nav("Key Findings", ui.output_plot("plot")),
+        ui.nav("Key Findings", 
+               ui.row(
+                   ui.column(6, ui.div(ui.h2("Theatre and Community Organizations Averaged a Positive Bottom Line in 2019"),ui.span("Community and Theater organizations operate on surpluses when analyzed along with all three measurements, with the Community sector coming out on top after accounting for depreciation. Performing Arts Centers (PACs) had the highest unrestricted surplus, and Other Museums had the highest operating surplus before depreciation.")), style=style),
+                   ui.column(6, ui.output_plot("kf_1"), style=style),
+               )),
         ui.nav("Size", ui.output_plot("size")),
-        ui.nav("Sector", "Sector Graph")
+        ui.nav("Sector", ui.output_plot("plot"))
      )
     ),
     
@@ -48,6 +54,10 @@ app_ui = ui.page_fluid(
 )
 
 def server(input, output, session):
+    @output
+    @render.plot(alt="Community Mean Operationing")
+    def kf_1():
+        kf = create_OneBarplot(df=df,var='Unrestricted_operating_bottomline', yr=2020,sz='Small',st='Community', agg='mean', style='darkgrid',width=0.1,color='orange',alpha=1, xlabel_size=15,title_size=10,xticks_size=20,chartTitle="Community Unrestricted Operating Bottom Line")
     @output
     @render.plot(alt="simple line graph")
     def plot():
@@ -61,24 +71,9 @@ def server(input, output, session):
 
         # Create bar plot
         # g = sns.barplot(x='year', y='Unrestricted_operating_bottomline', hue='Size', data=grouped_data, ax=ax)
-        g = create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None)
+        g = create_barplot(df,var,hue='Size',style='darkgrid',savepath=None)
         
-        
-        # g = sns.barplot(x='year', y='Unrestricted_operating_bottomline', hue='Size', data=df)
 
-        # set legend fontsize larger
-        # sns.set(font_scale=4)
-
-        # Set x-axis label
-        #plt.xlabel('Year',size=20)
-
-        # Set y-axis label
-       # plt.ylabel('Mean Unrestricted_operating_bottomline',size=20)
-
-        # Set title
-        #plt.title('Mean Unrestricted_operating_bottomline by Year and Size',size=20)
-
-        #plt.savefig('Mean_Unrestricted_operating_bottomline_by_Year_and_Size.png');
 
     
    

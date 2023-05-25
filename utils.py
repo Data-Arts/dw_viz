@@ -488,12 +488,12 @@ def create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None):
 
     # set legend fontsize larger
     # sns.set(font_scale=1.5)
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper right', borderaxespad=0)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.,title=hue)
     # Set x-axis label
-    plt.xlabel('Year',size=20)
+    plt.xlabel('Year',size=15)
 
     # Set y-axis label
-    plt.ylabel(f'Mean {var}',size=20)
+    plt.ylabel(f'Mean {var}',size=15)
 
     # Set title
     plt.title(f'Mean {var} by Year and {hue}',size=20)
@@ -502,7 +502,7 @@ def create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None):
     return
 
 
-def create_OneBarplot(df,var,yr,sz,st,agg='mean',style='darkgrid',width=0.1,color='orange',alpha=1,xlabel_size=30,title_size=30,xticks_size=20,savepath=None):
+def create_OneBarplot(df,var,yr,sz,st,agg='mean',style='darkgrid',width=0.1,color='orange',alpha=1,xlabel_size=30,title_size=30,xticks_size=20,chartTitle="Graph Title",savepath=None):
 
     # Group data by year and type and calculate mean/median values
     if agg=='median':
@@ -533,8 +533,10 @@ def create_OneBarplot(df,var,yr,sz,st,agg='mean',style='darkgrid',width=0.1,colo
     plt.ylabel('')
 
     # Set title
-    plt.title(f'{var}-{agg} {yr} ({sz} - {st})',size=title_size)
+    #plt.title(f'{var}-{agg} {yr} ({sz} - {st})',size=title_size)
     
+    plt.title(chartTitle)
+
     if savepath is None:
         plt.savefig(f'{var}-{agg}_{yr}_{sz}_{st}.png')
     else:
