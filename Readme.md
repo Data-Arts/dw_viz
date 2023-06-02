@@ -5,7 +5,7 @@ cd DataViz
 pip install -r requirements.txt  
 or   
 cd DataViz  
-pip3 -m pip install -r requirements.txt  
+python3 -m pip install -r requirements.txt  
   
   
 # 2. metadata.txt: meta data to set the hyperparameters
