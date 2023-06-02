@@ -1,10 +1,8 @@
 # 1. setup Environment
 python >= 3.8  
-  
-cd DataViz  
+   
 pip install -r requirements.txt  
 or   
-cd DataViz  
 python3 -m pip install -r requirements.txt  
   
   
