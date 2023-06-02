@@ -8,8 +8,10 @@ python3 -m pip install -r requirements.txt
   
 # 2. metadata.txt: meta data to set the hyperparameters
 ### (1) Use your own Snowflake credentials:  
-"sfcds":{"uid":"XXXXX",  
-         "pwd":"XXXXX"}  
+"sfcds":{
+"uid":"XXXXX",
+"pwd":"XXXXX"
+}  
   
 ### (2) SmartsDB database info on Snowflake:  
 "dbs":{  
