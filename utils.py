@@ -407,7 +407,7 @@ def create_cdpdataset():
     #change column names
     df.columns = ['survey_response_id', 'colname', 'value', 'updated_at']
     #create pivot table
-    df = df.pivot("survey_response_id","colname","value").reset_index(drop=True)
+    df = df.pivot(index="survey_response_id",columns="colname",values="value").reset_index(drop=True)
     #keep data where CYEAR>2015
     df['CYEAR'] = pd.to_numeric(df['CYEAR'],errors='coerce')
     df=df[df['CYEAR']>2015].reset_index(drop=True)
@@ -457,18 +457,17 @@ def winsorize_data(df,limits_winsorized,var):
 
     
 
-def create_boxplot(dfy_winsorized,var,savepath='boxplot_by_size.png'):
+def create_boxplot(dfy_winsorized,var,hue='Size',savepath=None):
     f,ax = plt.subplots(1,1,figsize=(20,10))
     colors = ['red','blue','green']*len(dfy_winsorized['year'].unique())
 
 
-    dfy_winsorized[[var,'Size','year']].boxplot(column=var,by=['year','Size'],rot=90,ax=ax)
-    plt.savefig(savepath)
-    plt.close()
+    dfy_winsorized[[var,hue,'year']].boxplot(column=var,by=['year',hue],rot=90,ax=ax)
+    if savepath is None:
+        plt.savefig(f'boxplot_by_{hue}.png')
+    else:
+        plt.savefig(savepath)
     return
-
-
-
 
         
 def create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None):
@@ -476,7 +475,7 @@ def create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None):
         savepath = f'Mean_{var}_by_Year_and_{hue}.png'
     df['year'] = df['year'].astype(int)
     # Group data by year and type and calculate mean values
-    grouped_data = df.groupby(['year', hue]).mean(numeric_only=True).reset_index()
+    grouped_data = df[['year',hue,var]].groupby(['year', hue]).mean(numeric_only=True).reset_index()
 
     # Set seaborn style
     sns.set_style(style)
@@ -506,9 +505,9 @@ def create_OneBarplot(df,var,yr,sz,st,agg='mean',style='darkgrid',width=0.1,colo
 
     # Group data by year and type and calculate mean/median values
     if agg=='median':
-        grouped_data = df.groupby(['year', 'Size','Sector']).median().reset_index()
+        grouped_data = df[['year', 'Size','Sector',var]].groupby(['year', 'Size','Sector']).median().reset_index()
     else:
-        grouped_data = df.groupby(['year', 'Size','Sector']).mean().reset_index()
+        grouped_data = df[['year', 'Size','Sector',var]].groupby(['year', 'Size','Sector']).mean().reset_index()
     
     grouped_data_sub = grouped_data[(grouped_data['year']==yr)&(grouped_data['Size']==sz)&(grouped_data['Sector']==st)]
 
@@ -545,6 +544,39 @@ def create_OneBarplot(df,var,yr,sz,st,agg='mean',style='darkgrid',width=0.1,colo
     return
 
 
+def create_oneyear_Barplot(df,var,yr,hue='Sector',agg='mean',style='darkgrid',alpha=1,xlabel_size=30,title_size=30,xticks_size=20):
+    
+    # Group data type and calculate mean values for one year
+    if agg=='median':
+        grouped_data = df.loc[df['year']==yr,['year',hue,var]].groupby(['year', hue]).median().reset_index()
+    else:
+        grouped_data = df.loc[df['year']==yr,['year',hue,var]].groupby(['year', hue]).mean().reset_index()
+        
+    
+    # Set seaborn style
+    sns.set_style(style)
+    
+    _,ax = plt.subplots(1,1,figsize=(20,10))
+    
+    # Create bar plot
+    sns.barplot(x='year', y=var, hue=hue, data=grouped_data, ax=ax)
+    
+    # set legend fontsize larger
+    # sns.set(font_scale=1.5)
+    
+    # Set x-axis label
+    plt.xlabel('Year',size=xlabel_size)
+    
+    # Set y-axis label
+    plt.ylabel('')
+    
+    # Set title
+    plt.title(f'{var}-{agg} {yr} (by {hue})',size=title_size)
+    
+    plt.savefig(f'{var}-{agg}_{yr}_by_{hue}.png');
+    return 
+
+
 if __name__ == '__main__':
     print("========= preparing data =========")
     #create cdp dataset from snowflake smartsdb
@@ -555,7 +587,7 @@ if __name__ == '__main__':
     
     print('========= Display graph =========')
     #boxplot
-    create_boxplot(df,var,savepath='boxplot_by_size.png')
+    create_boxplot(df,var,hue='Size',savepath='boxplot_by_size.png')
     
     #barplot
     create_barplot(df,var,hue='Sector',style='darkgrid',savepath=None)
@@ -569,6 +601,12 @@ if __name__ == '__main__':
                       style='darkgrid',width=0.1,color='orange',alpha=1, #canvas style, bar width, bar color, tranparency 0-1
                       xlabel_size=30,title_size=30,xticks_size=20) #xlabel size, title size, xticks size
     
+    #barplot for one year - Size or Sector
+    create_oneyear_Barplot(df=df,
+                           var='Unrestricted_operating_bottomline',
+                           yr=2020,hue='Sector',agg='mean',
+                           style='darkgrid',alpha=1,
+                           xlabel_size=30,title_size=30,xticks_size=20)
     
     
     
